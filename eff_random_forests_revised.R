@@ -70,11 +70,12 @@ table.all <- fun_table.qc(wrk.table=table.all, qc1.set=qc1.set, qc2.set=qc2.set,
 
 library("dplyr")
 library("randomForest")
-library("caret")
+#library("caret")
 
 
 # read the enso index table 
 enso.table <- read.csv(file="/lfs/home/ychen/LAI_STUDY_EAsia/ENSO_DATA/NOI_1999to2019.txt",sep=",",header=T)
+pj.table <- read.csv(file="/lfs/home/ychen/LAI_STUDY_EAsia/ERA5_DATA/PJ_INDEX/PJ_index.csv",sep=",",header=T)  
 
 # assign the positve/negtive value of eff_size as group B/A
 table.all$group <- NA
@@ -84,12 +85,15 @@ table.all$group <- as.factor(table.all$group)
 
 #assign the  index to the TC event 
 table.all$oni.enso <- NA
+table.all$pj.index <- NA
 
 #assign the  index to the TC event 
 for (it in 1: length(table.all$group))  {
    # find the correct time step for all events 
    table.all$oni.enso[it] <- enso.table$Ocean_Nino_Index[which(enso.table$Year == table.all$date.yr[it]  
                                                          & enso.table$Mon == table.all$date.mon[it] ) ] 
+   table.all$pj.index[it] <- pj.table$PJ_index[which(pj.table$year == table.all$date.yr[it] 
+                                               & pj.table$mon == table.all$date.mon[it] ) ] 
 }
 
 
@@ -155,20 +159,20 @@ for (i in 1:12) {
 #if (i==1) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, bef.for.asw.aff, date.mon.day, oni.enso)
 #if (i==2) table.ana <- select(table.all , group, eve.for.mws.aff, eve.lat.med.aff, eve.intensity, bef.for.asw.aff, date.mon.day, oni.enso)
 
-if (i==1) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, eve.for.spei.aff, date.mon, oni.enso)
-if (i==2) table.ana <- select(table.all , group, eve.for.mws.aff, eve.lat.med.aff, eve.intensity, eve.for.spei.aff, date.mon, oni.enso)
-if (i==3) table.ana <- select(table.all , group, eve.for.acf.aff, eff.cex, eve.intensity, eve.for.spei.aff, date.mon, oni.enso)
-if (i==4) table.ana <- select(table.all , group, eve.for.mws.aff, eff.cex, eve.intensity, eve.for.spei.aff, date.mon, oni.enso)
+if (i==1) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, eve.for.spei.aff, date.mon, pj.index)
+if (i==2) table.ana <- select(table.all , group, eve.for.mws.aff, eve.lat.med.aff, eve.intensity, eve.for.spei.aff, date.mon, pj.index)
+if (i==3) table.ana <- select(table.all , group, eve.for.acf.aff, eff.cex, eve.intensity, eve.for.spei.aff, date.mon, pj.index)
+if (i==4) table.ana <- select(table.all , group, eve.for.mws.aff, eff.cex, eve.intensity, eve.for.spei.aff, date.mon, pj.index)
 
-if (i==5) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, bef.for.lai.aff, date.mon, oni.enso)
-if (i==6) table.ana <- select(table.all , group, eve.for.mws.aff, eve.lat.med.aff, eve.intensity, bef.for.lai.aff, date.mon, oni.enso)
-if (i==7) table.ana <- select(table.all , group, eve.for.acf.aff, eff.cex, eve.intensity, bef.for.lai.aff, date.mon, oni.enso)
-if (i==8) table.ana <- select(table.all , group, eve.for.mws.aff, eff.cex, eve.intensity, bef.for.lai.aff, date.mon, oni.enso)
+if (i==5) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, bef.for.lai.aff, date.mon, pj.index)
+if (i==6) table.ana <- select(table.all , group, eve.for.mws.aff, eve.lat.med.aff, eve.intensity, bef.for.lai.aff, date.mon, pj.index)
+if (i==7) table.ana <- select(table.all , group, eve.for.acf.aff, eff.cex, eve.intensity, bef.for.lai.aff, date.mon, pj.index)
+if (i==8) table.ana <- select(table.all , group, eve.for.mws.aff, eff.cex, eve.intensity, bef.for.lai.aff, date.mon, pj.index)
 
-if (i==9) table.ana <-  select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, bef.for.acf.aff, date.mon, oni.enso)
-if (i==10) table.ana <- select(table.all , group, eve.for.mws.aff, eve.lat.med.aff, eve.intensity, bef.for.acf.aff, date.mon, oni.enso)
-if (i==11) table.ana <- select(table.all , group, eve.for.acf.aff, eff.cex, eve.intensity, bef.for.acf.aff, date.mon, oni.enso)
-if (i==12) table.ana <- select(table.all , group, eve.for.mws.aff, eff.cex, eve.intensity, bef.for.acf.aff, date.mon, oni.enso)
+if (i==9) table.ana <-  select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, bef.for.acf.aff, date.mon, pj.index)
+if (i==10) table.ana <- select(table.all , group, eve.for.mws.aff, eve.lat.med.aff, eve.intensity, bef.for.acf.aff, date.mon, pj.index)
+if (i==11) table.ana <- select(table.all , group, eve.for.acf.aff, eff.cex, eve.intensity, bef.for.acf.aff, date.mon, pj.index)
+if (i==12) table.ana <- select(table.all , group, eve.for.mws.aff, eff.cex, eve.intensity, bef.for.acf.aff, date.mon, pj.index)
 
 
 # Set random seed to make results reproducible:
@@ -226,20 +230,18 @@ imp.table$vars <- as.factor(as.character(imp.table$vars))
 #if (data.set == "./Rda_60/") {
 # adjust the orders 
 
-
+# eve.for.acf.aff eve.for.spei.aff         date.mon  eve.lat.med.aff  bef.for.lai.aff  bef.for.acf.aff  eve.for.mws.aff          eff.cex    eve.intensity         pj.index
+#      21.6946124       -1.0996020        7.9609186        1.7772625        4.9584312        3.3043613        2.0168017        0.7440358        3.4494686       10.6475595
 
 imp.table$vars <- factor(imp.table$vars , 
-                   levels=c("eve.for.acf.aff", "eve.for.spei.aff","date.mon",
-                            "eve.lat.med.aff", "bef.for.lai.aff","bef.for.acf.aff","eve.for.mws.aff","eff.cex",
-                            "eve.intensity", "oni.enso"))
+                   levels=c("eve.for.acf.aff","pj.index","date.mon","bef.for.lai.aff","eve.intensity",
+                            "bef.for.acf.aff","eve.for.mws.aff","eve.lat.med.aff","eff.cex", "eve.for.spei.aff"))
 #
-var.names <- rev(c("Accumulated rainfall(b)","Prior drought state(c)","Month", 
-                   "Latitude of landfall(a)", "Prior LAI(c)", "Prior accumulated rainfall(c)","Maximum wind speed(b)","Affect area",
-                   "Cyclone intensity(a)","Nino Oceanic index"))
+var.names <- rev(c("Accumulated rainfall(b)","Pacific Japan index","Month", "Prior LAI(c)", "Cyclone intensity(a)", 
+                   "Prior accumulated rainfall(c)","Maximum wind speed(b)", "Latitude of landfall(a)", "Affect area","Prior drought state (c)")) 
 #
-var.group <- rev(c("TCC","PC","PC",
-               "TCC","PC","PC","TCC","TCC",
-               "TCC","PC"))
+var.group <- rev(c("TCC","PC","PC","PC","TCC",
+                    "PC","TCC","TCC","TCC","PC"))
 #} else if(data.set == "./Rda_50") {
 
 
@@ -267,11 +269,8 @@ new.order.table <- with(tmp.table, reorder(f.name, f.data, median, na.rm=T))
 #boxplot(tmp.table$f.data ~ new.order.table)
 
 
-
-
-
 go.pdf = T 
-if(go.pdf) {pdf(file="Fig3_updated.pdf",width=12, height=9) } else{ print("go x-windows") }
+if(go.pdf) {pdf(file="Fig3_updated_PJ.pdf",width=12, height=9) } else{ print("go x-windows") }
 
 
 #adjust label size 

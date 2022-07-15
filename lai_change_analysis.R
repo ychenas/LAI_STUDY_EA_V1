@@ -15,6 +15,7 @@
 # Revised Date: 2021-04-03 refine the quality check by incroplating the error propogation from samples. 
 # Revised Date: 2021-07-24 add SPEI information for each event based analysis (suggested by Matt)
 # Revised Date: 2021-08-11 add lag SPEI information for checking the change of drought state in affected area  
+# Reviced Date: 2022-07-15 revised the 0.5 LAI difference to 10%*LAI 
 # -----------------------------------------------------------------
 
 fun.dyn.lai <- function ( Ref.wind=3.0, Ref.rain=100, win.size=40, offdays=30, pdays=60, track.dir="TRACK_DATA_TS_125D")
@@ -712,10 +713,16 @@ ny1=2000; ny2=5000
   # add the check of the mean difference of LAI before the TC event in the reference and the affect area 
    lai.dif.bef <- abs(mean(lai_be*eve.tc.aff.mask*lc.for.mask,na.rm=T) - mean(lai_be*eve.tc.ref.mask*lc.for.mask,na.rm=T))
    print( paste("Absolute mean difference in LAI before the TC event between the reference and the affected area:", lai.dif.bef,sep="") )  
-   if ( lai.dif.bef >= 0.25 ) {
-       print( paste("Absolute mean difference over than 0.2:", lai.dif.bef," Skip the event !", sep="") )  
-       qc1.flag <- FALSE
+   
+    
+   if (lai.dif.bef >= (0.1* (mean(lai_be*eve.tc.aff.mask*lc.for.mask,na.rm=T) + mean(lai_be*eve.tc.ref.mask*lc.for.mask,na.rm=T))/2.) ) {
+ 
+   #   if ( lai.dif.bef >= 0.5 ) {
+   #    print( paste("Absolute mean difference over than 0.5:", lai.dif.bef," Skip the event !", sep="") )  
+        print( paste("Absolute mean difference over than 10%*LAI:", lai.dif.bef," Skip the event !", sep="") )  
+        qc1.flag <- FALSE
    }
+   
    qc1.score <- lai.dif.bef
    
    # calculate effect size  

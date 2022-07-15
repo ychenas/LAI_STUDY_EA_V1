@@ -48,13 +48,11 @@ run.txt <- c("wind(1a)","wind(1b)","wind(1c)", "rainfall(2a)","rainfall(2b)","ra
 run.col <- c(rep("darkgray",9))
 run.lwd <- c(rep(2.5,9))
 
+c_pecent <- c(23, 15, 10, 12, 18, 22 )
+pdf("FigS2_3x3.pdf",height=16, width=16)
 
-
-pdf("FigS2.pdf",height=16, width=16)
-
-par(mfrow=c(1,1), mar=c(5,5,3,1))
- 
-for (irun in 1:8) {
+par(mfrow=c(3,3), mar=c(5,5,3,1))
+for (irun in 1:9) {
 ## load the data 
 load(paste(table.dir,"/",wrk.rda[irun], sep=""))
 
@@ -69,30 +67,65 @@ neg.qcqa.table <- subset(qcqa.table, ((qcqa.table$eff.size.for)< -0.2)  )
 neu.qcqa.table <- subset(qcqa.table, (abs(qcqa.table$eff.size.for)<= 0.2)  )
 
 
-if (irun == 1 ) {
+#f ( (irun == 1)|(irun==4)|(irun==7) ) {
 plot( ecdf(all.table[,"eve.intensity"]), do.points=F,verticals=TRUE,
      xlim=c(15,85), 
      xlab="Tropical cyclones maximum intensity (m/s)",
      ylab="Cumulative proportion",main="",
-     col="black",lwd=4,cex.lab=2, cex.axis=2, cex.main=2, cex.sub=2)
+     col="white",lwd=0,cex.lab=2, cex.axis=2, cex.main=2, cex.sub=2)
 #title("Negative effect size TC intensity distributions (1999-2018)", line = 2.5, cex.main=2.0)
-}
-#add category line
+#}
+#add legend 
+leg.title<- c("2D runs(wind only)", "3D runs(wind only)", "4D runs(wind only)",
+              "2D runs(rain only)", "3D runs(rain only)", "4D runs(rain only)",
+              "2D runs(wind/rain)", "3D runs(wind/rain)", "4D runs(wind/rain)")
+#if (irun <=if (irun <=if (irun <=3 ) {
+     legend(title=leg.title[irun],60, 0.3, c("Positive", "Neutral", "Negative"), col = c("forestgreen","cyan","orange"),
+            text.col = "black", lty = c(1, 1, 1),  merge = TRUE, bg = "gray90",cex=1.5,lwd=c(2,2,2))
+#}
 
-abline(v=64*0.51,col="black",lty="dashed") 
-abline(v=83*0.51,col="black",lty="dashed")
-abline(v=96*0.51,col="black",lty="dashed")
-abline(v=113*0.51,col="black",lty="dashed")
-abline(v=136*0.51, col="black",lty="dashed")
+
+xx <- c(64*0.51,83*0.51,96*0.51,113*0.51,136*0.51)
+yy <- c(35/100,47/100,55/100,66/100,87/100)
+
+off.y <- c(0.03)
+abline(v=64*0.51,col="gray",lty="dashed") 
+abline(v=83*0.51,col="gray",lty="dashed")
+abline(v=96*0.51,col="gray",lty="dashed")
+abline(v=113*0.51,col="gray",lty="dashed")
+abline(v=136*0.51, col="gray",lty="dashed")
+
+abline(h=35/100,col="gray",lty="dashed") 
+abline(h=47/100,col="gray",lty="dashed")
+abline(h=55/100,col="gray",lty="dashed")
+abline(h=66/100,col="gray",lty="dashed")
+abline(h=87/100, col="gray",lty="dashed")
+text(x=18,y=yy[1]-off.y,"35%",cex=2)
+text(x=18,y=yy[2]-off.y,"47%",cex=2)
+text(x=18,y=yy[3]-off.y,"55%",cex=2)
+text(x=18,y=yy[4]-off.y,"66%",cex=2)
+text(x=18,y=yy[5]-off.y,"87%",cex=2)
+
+
+
+
+
+
 axis(3, at=c(64*.51,83*.51,96*.51,113*.51,136*.51),
- labels=c("C-1","C-2","C-3","C-4","C-5"), las=1, cex.axis=1.5)
+ labels=c("C1","C2","C3","C4","C5"), las=1, cex.axis=1.5)
 
 plot(ecdf(neg.qcqa.table[,"eve.intensity"]),do.points=T,verticals=TRUE,cex=2.0,
      col="orange", lwd=4, lty=run.lty[irun],pch=run.pch[irun],add=T)
+plot(ecdf(neu.qcqa.table[,"eve.intensity"]),do.points=T,verticals=TRUE,cex=2.0,
+     col="cyan", lwd=4, lty=run.lty[irun],pch=run.pch[irun],add=T)
+plot(ecdf(pos.qcqa.table[,"eve.intensity"]),do.points=T,verticals=TRUE,cex=2.0,
+     col="forestgreen", lwd=4, lty=run.lty[irun],pch=run.pch[irun],add=T)
+
+
 
 #if (irun==9) {
-#plot( ecdf(all.table[,"eve.intensity"]), do.points=F,verticals=TRUE,
-#     col="black",lwd=1,add=T)
+plot( ecdf(all.table[,"eve.intensity"]), do.points=F,verticals=TRUE,
+     col="black",lwd=2,add=T)
 #}
 
 
@@ -111,111 +144,6 @@ par(xpd=FALSE)
 #       pch=run.pch,
 #       lwd=c(1,1,1,1,1,1,1,1,1),
 #       cex=1.5)  # specify the point type to be a square
-
-
-for (irun in 1:8) {
-## load the data 
-load(paste(table.dir,"/",wrk.rda[irun], sep=""))
-#convert knot to m/s 
-table.comb$eve.intensity <- as.numeric(table.comb$eve.intensity)*0.51
-all.table <- table.comb
-
-
-all.table <- table.comb
-qcqa.table <- fun_table.qc( table.comb, qc1.set=0.5, qc2.set=0.2, area.set=0) 
-pos.qcqa.table <- subset(qcqa.table, ((qcqa.table$eff.size.for)> 0.2)  )
-neg.qcqa.table <- subset(qcqa.table, ((qcqa.table$eff.size.for)< -0.2)  )
-neu.qcqa.table <- subset(qcqa.table, (abs(qcqa.table$eff.size.for)<= 0.2)  )
-
-
-if (irun == 1 ) {
-plot( ecdf(all.table[,"eve.intensity"]), do.points=F,verticals=TRUE,
-     xlim=c(15,85), 
-     xlab="Tropical cyclones maximum intensity (m/s)",
-     ylab="Cumulative proportion",main="",
-     col="black",lwd=4,cex.lab=2, cex.axis=2, cex.main=2, cex.sub=2,add=T)
-#title("Positive effect size TC intensity distributions (1999-2018)", line = 2.5,cex.main=2.0)
-}
-#add category line
-abline(v=64*0.51,col="black",lty="dashed") 
-abline(v=83*0.51,col="black",lty="dashed")
-abline(v=96*0.51,col="black",lty="dashed")
-abline(v=113*0.51,col="black",lty="dashed")
-abline(v=136*0.51, col="black",lty="dashed")
-axis(3, at=c(64*.51,83*.51,96*.51,113*.51,136*.51),
- labels=c("C-1","C-2","C-3","C-4","C-5"), las=1, cex.axis=1.5)
-
-
-plot(ecdf(pos.qcqa.table[,"eve.intensity"]),do.points=T,verticals=TRUE,cex=2.0,
-     col="forestgreen", lwd=4, lty=run.lty[irun],pch=run.pch[irun],add=T)
-
-#if (irun==9) {
-#plot( ecdf(all.table[,"eve.intensity"]), do.points=F,verticals=TRUE,
-#     col="black",lwd=1,add=T)
-#}
-
-
-table.comb$eve.intensity <- as.numeric(table.comb$eve.intensity)*0.51
-all.table <- table.comb
-
-
-par(xpd=TRUE)
-text(x=5,y=1.1, label="",cex=2, font=2)  
-par(xpd=FALSE)
- 
-} # end of loop 
-
-for (irun in 1:9) {
-## load the data 
-load(paste(table.dir,"/",wrk.rda[irun], sep=""))
-#convert knot to m/s 
-table.comb$eve.intensity <- as.numeric(table.comb$eve.intensity)*0.51
-all.table <- table.comb
-
-
-all.table <- table.comb
-qcqa.table <- fun_table.qc( table.comb, qc1.set=0.5, qc2.set=0.2, area.set=0) 
-pos.qcqa.table <- subset(qcqa.table, ((qcqa.table$eff.size.for)> 0.2)  )
-neg.qcqa.table <- subset(qcqa.table, ((qcqa.table$eff.size.for)< -0.2)  )
-neu.qcqa.table <- subset(qcqa.table, (abs(qcqa.table$eff.size.for)<= 0.2)  )
-
-
-if (irun == 1 ) {
-plot( ecdf(all.table[,"eve.intensity"]), do.points=F,verticals=TRUE,
-     xlim=c(15,85), 
-     xlab="Tropical cyclones maximum intensity (m/s)",
-     ylab="Cumulative proportion",main="",
-     col="black",lwd=4,cex.lab=2, cex.axis=2, cex.main=1.5, cex.sub=2,add=T)
-#title("Neutral effect size TC intensity distributions (1999-2018)", line = 2.5,cex.main=2.0)
-}
-#add category line
-abline(v=64*0.51,col="black",lty="dashed") 
-abline(v=83*0.51,col="black",lty="dashed")
-abline(v=96*0.51,col="black",lty="dashed")
-abline(v=113*0.51,col="black",lty="dashed")
-abline(v=136*0.51, col="black",lty="dashed")
-axis(3, at=c(64*.51,83*.51,96*.51,113*.51,136*.51),
- labels=c("C-1","C-2","C-3","C-4","C-5"), las=1, cex.axis=1.5)
-
-
-plot(ecdf(neu.qcqa.table[,"eve.intensity"]),do.points=T,verticals=TRUE,cex=2.0,
-     col="deepskyblue1", lwd=4, lty=run.lty[irun],pch=run.pch[irun],add=T)
-
-
-if (irun==9) {
-plot( ecdf(all.table[,"eve.intensity"]), do.points=F,verticals=TRUE,
-     col="black",lwd=5,add=T)
-}
-
-
-par(xpd=TRUE)
-text(x=5,y=1.1, label="",cex=2.0, font=2)  
-par(xpd=FALSE)
-
-
-
-} # end of loop 
-
 
 
 
