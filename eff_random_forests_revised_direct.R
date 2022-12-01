@@ -82,6 +82,7 @@ qc2.set <- 0.1
 area.set <- 0
 
 
+
 #data.set <- c("./Rda_60/")
 data.set <- c("./spei02/BG_R1/")
 
@@ -189,44 +190,51 @@ if (ld.go) {
 #table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eve.intensity, bef.for.asw.aff, date.mon.day, oni.enso)
 
 
-# Calculate the size of each of the data sets:
-#data_set_size <- floor(nrow(table.ana))
-# Mote Carlo sampling with n/2 of total data_set_size
-#data_set_size <- as.integer(data_set_size/2)
-#data_set_size = 131 
-
 
 
 # subset table
 imp.table <- NA 
 
-for (i in 1:16) {
+for (i in 1:10) {
+
+#
+#)
+
+# "w_0_p_100_4D"  "w_0_p_60_2D"   "w_0_p_80_3D"   "w_10_p_0_3D"   "w_10_p_80_3D"  "w_12_p_0_4D"   "w_12_p_100_4D" "w_8_p_0_2D"    "w_8_p_60_2D"
+#2D definition
+if (i==1) table.ana <- subset(table.all , table.all$run.case=="w_0_p_60_2D")
+if (i==2) table.ana <- subset(table.all , table.all$run.case=="w_8_p_0_2D")
+if (i==3) table.ana <- subset(table.all , table.all$run.case=="w_8_p_60_2D")
+
+#3D definition
+if (i==4) table.ana <- subset(table.all , table.all$run.case=="w_0_p_80_3D")
+if (i==5) table.ana <- subset(table.all , table.all$run.case=="w_10_p_0_3D")
+if (i==6) table.ana <- subset(table.all , table.all$run.case=="w_10_p_80_3D")
+
+#4D definition
+if (i==7) table.ana <- subset(table.all , table.all$run.case=="w_0_p_100_4D")
+if (i==8) table.ana <- subset(table.all , table.all$run.case=="w_12_p_0_4D")
+if (i==9) table.ana <- subset(table.all , table.all$run.case=="w_12_p_100_4D")
+
+#234D definition
+if (i==10) table.ana <- table.all 
 
 # prepare table for analysis
-
-if (i==1) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.lat.med.aff, eff.cex,  bef.for.acf.aff, eve.for.spei.aff)
-if (i==2) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.lat.med.aff, eff.cex,  bef.for.lai.aff, eve.for.spei.aff)
-if (i==3) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.intensity,   eff.cex,  bef.for.acf.aff, eve.for.spei.aff)
-if (i==4) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.intensity,   eff.cex,  bef.for.lai.aff, eve.for.spei.aff)
-
-if (i==5) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.lat.med.aff, date.mon, bef.for.acf.aff, eve.for.spei.aff)
-if (i==6) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.intensity,   date.mon, bef.for.acf.aff, eve.for.spei.aff)
-if (i==7) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.lat.med.aff, date.mon, bef.for.lai.aff, eve.for.spei.aff)
-if (i==8) table.ana <- select(table.all , group, eve.for.mws.aff, eve.for.acf.aff, eve.intensity,   date.mon, bef.for.lai.aff, eve.for.spei.aff)
-
-if (i==9) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff,  eff.cex,        bef.for.acf.aff, pj.index, eve.for.spei.aff)
-if (i==10) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff, eff.cex,        bef.for.lai.aff, pj.index, eve.for.spei.aff)
-if (i==11) table.ana <- select(table.all , group, eve.for.acf.aff, eve.intensity,   eff.cex,        bef.for.acf.aff, pj.index, eve.for.spei.aff)
-if (i==12) table.ana <- select(table.all , group, eve.for.acf.aff, eve.intensity,   eff.cex,        bef.for.lai.aff, pj.index, eve.for.spei.aff)
-
-if (i==13) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff,   date.mon, bef.for.acf.aff, pj.index, eve.for.spei.aff)
-if (i==14) table.ana <- select(table.all , group, eve.for.acf.aff, eve.intensity,     date.mon, bef.for.acf.aff, pj.index, eve.for.spei.aff)
-if (i==15) table.ana <- select(table.all , group, eve.for.acf.aff, eve.lat.med.aff,   date.mon, bef.for.lai.aff, pj.index, eve.for.spei.aff)
-if (i==16) table.ana <- select(table.all , group, eve.for.acf.aff, eve.intensity,     date.mon, bef.for.lai.aff, pj.index, eve.for.spei.aff)
+table.ana <- select(table.ana , group, 
+                                eve.for.mws.aff,eve.for.acf.aff, eve.lat.med.aff,  eve.intensity, eff.cex, eve.tc.occ.aff,
+                                date.mon.day, bef.for.acf.aff,  bef.for.lai.aff, pj.index, eve.for.spei.ref, del.spei.for)
 
 
 # Set random seed to make results reproducible:
 set.seed(17*i)
+
+
+# Calculate the size of each of the data sets:
+data_set_size <- floor(nrow(table.ana))
+# Mote Carlo sampling with n/2 of total data_set_size
+#data_set_size <- as.integer(data_set_size/2)
+#data_set_size = 131 
+
 # Generate a random sample of "data_set_size" indexes
 indexes <- sample(1:nrow(table.ana), size = data_set_size)
 
@@ -277,6 +285,7 @@ imp.table <- imp.table[complete.cases(imp.table), ]
 # set vars as factor 
 imp.table$vars <- as.factor(as.character(imp.table$vars))
 
+
 #if (data.set == "./Rda_60/") {
 # adjust the orders 
 
@@ -319,7 +328,7 @@ new.order.table <- with(tmp.table, reorder(f.name, f.data, median, na.rm=T))
 #boxplot(tmp.table$f.data ~ new.order.table)
 
 
-go.pdf = T 
+go.pdf = F 
 if(go.pdf) {pdf(file="Fig3_updated_PJ.pdf",width=12, height=9) } else{ print("go x-windows") }
 
 

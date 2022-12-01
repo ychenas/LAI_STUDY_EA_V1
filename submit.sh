@@ -59,7 +59,7 @@ CONT=0
 #arg6="TRACK_DATA_2D"
 #
 
-for irun in {7..9}
+for irun in {5..5}
 
 do
 #combine based
@@ -115,7 +115,7 @@ CONFIG_FILE="R_${arg1}_${arg2}_${arg3}_${arg4}_${arg5}_${arg6}.job"
 cp $TEMPLATE_FILE $CONFIG_FILE
 
 #dynamic text for the argunments, input and output files and directory
-log_file="w_${arg1}_p_${arg2}_window_${arg3}_offset_${arg4}_pos_${arg5}_track_${arg6}_tc.occ.spei_02.log"
+log_file="w_${arg1}_p_${arg2}_window_${arg3}_offset_${arg4}_pos_${arg5}_track_${arg6}_tc.occ.spei_02_qc.log"
 #
 TARGET_KEY="work_dir"
 REPLACEMENT_VALUE="\/lfs\/home\/ychen\/scripts\/R\/Rscripts\/LAI_STUDY_EA\/"

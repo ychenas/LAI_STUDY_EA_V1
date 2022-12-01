@@ -1,13 +1,13 @@
 #!/bin/sh
 
 #init git 
-git init
+#git init
 
 #add files 
 git add *.R *.rda spei* *.sh submit.*
 
 #commit files 
-git commit -m "update files for BG R1!"
+git commit -m "update files for BG R2 add ANOVA, SPEI anlaysis!"
 
 #set the origin, only for the first time
 #git remote add origin git@github.com:ychenatsinca/LAI_STUDY_EA_V1.git

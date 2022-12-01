@@ -30,6 +30,7 @@ Del.wind=0; Del.rain=0;
 
 spei.fname = "spei02"
 
+version = "BG_R1_QC"
 #all runs
 it1=5; it2=36*20
 
@@ -712,6 +713,11 @@ ny1=2000; ny2=5000
 
   # add the check of the mean difference of LAI before the TC event in the reference and the affect area 
    lai.dif.bef <- abs(mean(lai_be*eve.tc.aff.mask*lc.for.mask,na.rm=T) - mean(lai_be*eve.tc.ref.mask*lc.for.mask,na.rm=T))
+ 
+  # |LAIaff/LAIref -1| 
+  
+   lai.nor.bef <- abs ((mean(lai_be*eve.tc.aff.mask*lc.for.mask,na.rm=T)/mean(lai_be*eve.tc.ref.mask*lc.for.mask,na.rm=T) ) -1.0 )
+ 
    print( paste("Absolute mean difference in LAI before the TC event between the reference and the affected area:", lai.dif.bef,sep="") )  
    
     
@@ -723,7 +729,7 @@ ny1=2000; ny2=5000
         qc1.flag <- FALSE
    }
    
-   qc1.score <- lai.dif.bef
+   qc1.score <- lai.nor.bef
    
    # calculate effect size  
    #for forest area
@@ -763,13 +769,11 @@ ny1=2000; ny2=5000
       aa <- NA 
   } 
   
- 
    print(paste("Effect size of LAI in forest area:", eff.size.for,sep=""))
-
   
 
   #==================================
-  # Considering the error propogation,
+  # Considering the error propogation, 0.25 & 0.18
   # we will only analysis the event with mean difference over than 0.25 = sqrt(0.185^2 + 0.185^2)  
    if ( is.na(aa) != TRUE ) {
         if(  (abs(aa) >= abs(eff.size.for)) | (is.na(eff.size.for) == TRUE) ) {
@@ -779,6 +783,71 @@ ny1=2000; ny2=5000
        }
           print( paste("TC event, the normalized difference:", aa, sep="") )
          qc2.score <- aa 
+   } 
+  #=================================
+
+
+   bb <- (bb1+bb2)/2.
+   if (is.na(bb) != TRUE) {
+      eff.size.for <- (aa1-aa2)/bb
+  
+      #calculation of the error propogation term (aa) 
+      tot.n <- eve.aff.pix.tot + eve.ref.pix.tot
+      delta.x <- 0.5  
+      delta.y <-  sqrt(tot.n*(0.5)**2.)/tot.n
+      big.x <- (aa1-aa2)    # LAI difference 
+      big.y <- (bb1+bb2)/2. # LAI std
+      aa <- abs(eff.size.for)  * sqrt( (delta.x/big.x)**2. + (delta.y/big.y)**2.)  
+
+    }else{
+      eff.size.for <- NA
+      aa <- NA 
+  } 
+   print(paste("Effect size of LAI in forest area:", eff.size.for,sep=""))
+
+  #==================================
+  # Considering the error propogation, 0.5 & 0.5 
+  # we will only analysis the event with mean difference over than  = sqrt(0.185^2 + 0.185^2)  
+   if ( is.na(aa) != TRUE ) {
+        if(  (abs(aa) >= abs(eff.size.for)) | (is.na(eff.size.for) == TRUE) ) {
+        # exit the TC event loop  
+          print( "QC3! didn't pass") 
+          qc3.flag <- FALSE 
+       }
+          print( paste("TC event, the normalized difference:", aa, sep="") )
+         qc3.score <- aa 
+   } 
+  #=================================
+
+   bb <- (bb1+bb2)/2.
+   if (is.na(bb) != TRUE) {
+      eff.size.for <- (aa1-aa2)/bb
+  
+      #calculation of the error propogation term (aa) 
+      tot.n <- eve.aff.pix.tot + eve.ref.pix.tot
+      delta.x <- 0.1  
+      delta.y <-  sqrt(tot.n*(0.1)**2.)/tot.n
+      big.x <- (aa1-aa2)    # LAI difference 
+      big.y <- (bb1+bb2)/2. # LAI std
+      aa <- abs(eff.size.for)  * sqrt( (delta.x/big.x)**2. + (delta.y/big.y)**2.)  
+
+    }else{
+      eff.size.for <- NA
+      aa <- NA 
+  } 
+   print(paste("Effect size of LAI in forest area:", eff.size.for,sep=""))
+
+  #==================================
+  # Considering the error propogation, 0.1 & 0.1 
+  # we will only analysis the event with mean difference over than  = sqrt(0.185^2 + 0.185^2)  
+   if ( is.na(aa) != TRUE ) {
+        if(  (abs(aa) >= abs(eff.size.for)) | (is.na(eff.size.for) == TRUE) ) {
+        # exit the TC event loop  
+          print( "QC4! didn't pass") 
+          qc4.flag <- FALSE 
+       }
+          print( paste("TC event, the normalized difference:", aa, sep="") )
+         qc4.score <- aa 
    } 
   #=================================
 
@@ -969,8 +1038,10 @@ if (ld_go) {
                               tot.n = tot.n,
                               qc1.score = qc1.score,
                               qc2.score = qc2.score,
+                              qc3.score = qc3.score,
+                              qc4.score = qc4.score,
                               qc1.flag = qc1.flag,
-                              qc2.flag = qc2.flag  )
+                              qc2.flag = qc2.flag ) 
      print(table.tmp)
      # combine the table
      table.comb <- rbind( table.comb, table.tmp ) 
@@ -1092,7 +1163,7 @@ if (ld_go) {
   ed.date <- substr( lai.fnames[it2], start=11, stop=18)
 #  home.dir <- c("/data1/home/ychen/")
   #save(table.comb, file = paste(target,"_",st.date,"to",ed.date,"_table.comb.rda",sep="") )
-  save(table.comb, file = paste("./",spei.fname,"/",target,"_",st.date,"to",ed.date,"_table.comb",
+  save(table.comb, file = paste("./",spei.fname,"/",version,"/",target,"_",st.date,"to",ed.date,"_table.comb",
        "w_",Ref.wind,"_p_",Ref.rain ,"_",pos.txt,"_",off.txt,"_cut_",cut.off,"_tc.occ.rda",sep="") )
 
   return(table.comb)

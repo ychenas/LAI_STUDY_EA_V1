@@ -24,7 +24,7 @@ wrk.dir   <- c("/lfs/home/ychen/LAI_STUDY_EAsia/")
 track.dir <- c("/TRACK_DATA/")
 lc.dir    <- c("/LANDCOVER_DATA/")
 #table.dir <- c("/lfs/home/ychen/scripts/R/Rscripts/LAI_STUDY_EA/Rda_60_tc.occ/")
-table.dir <- c("/lfs/home/ychen/scripts/R/Rscripts/LAI_STUDY_EA/spei02/")
+table.dir <- c("/lfs/home/ychen/scripts/R/Rscripts/LAI_STUDY_EA/spei02/BG_R1/")
 
 
 # load the land cover map 
@@ -175,10 +175,10 @@ for.acc.10d <- t(for.acc.10d[nx10d:1,ny10d:1])
 #QC1 mean difference  on LAI
 #QC2 measurement uncertainty on LAI  
 qc1.set <- 0.5
-qc2.set <- 0.2
+qc2.set <- 0.1
 area.set <- 0
 
-fun_table.qc <- function(wrk.table, qc1.set=0.6, qc2.set=0.2, area.set=0) {
+fun_table.qc <- function(wrk.table, qc1.set=0.5, qc2.set=0.1, area.set=0) {
       #subset the datset with QC and QA score
       #Avariable area
       wrk.table <- subset(wrk.table, ((wrk.table$eve.for.pix.aff)> area.set)  )
@@ -188,14 +188,14 @@ fun_table.qc <- function(wrk.table, qc1.set=0.6, qc2.set=0.2, area.set=0) {
       return(wrk.table)
       }
 
-get_table.qc1 <- function(wrk.table, qc1.set=0.6, qc2.set=0.2,area.set=0) {
+get_table.qc1 <- function(wrk.table, qc1.set=0.5, qc2.set=0.1,area.set=0) {
       #get big difference
       wrk.table <- subset(wrk.table, ((wrk.table$eve.for.pix.aff)> area.set)  )
       wrk.table <- subset(wrk.table, ( abs(wrk.table$qc1.score)>qc1.set)  )
       return(wrk.table)  
 }
 
-get_table.qc2 <- function(wrk.table, qc1.set=0.6, qc2.set=0.2, area.set=0) {
+get_table.qc2 <- function(wrk.table, qc1.set=0.5, qc2.set=0.1, area.set=0) {
       #get neutral event
       wrk.table <- subset(wrk.table, ((wrk.table$eve.for.pix.aff)> area.set)  )
       wrk.table <- subset(wrk.table, (abs(wrk.table$eff.size.for)<qc2.set) & ( abs(wrk.table$qc1.score)<qc1.set) )  
@@ -209,7 +209,7 @@ runs <- c(1,2,3,4,5,6,7,8,9)
 run.txt <-c("a","b","c","d","e","f","g")
  
 # loop for different run cases
-for (irun in 8:8 ) {
+for (irun in 2:2 ) {
 # get run-case information 
 run.case <- sub("_pos.*","",sub(".*table.comb","",wrk.rda[irun])) 
 # get the data from Rda files 
@@ -495,8 +495,8 @@ if (ld.go) {
 
    #write out track data table
    write.table(track.data, file="all_tc_track_table.txt",sep=",")
-   write.table(table.comb, file="table_comb_3b_run.txt",sep=",")
-   write.table(table.neutral, file="table_neutral_3b_run.txt",sep=",")
+   write.table(table.comb, file="table_comb_3a_run.txt",sep=",")
+   write.table(table.neutral, file="table_neutral_3a_run.txt",sep=",")
 
 
 
